@@ -17,7 +17,12 @@ import (
 var addr = flag.String("addr", "18.217.77.98:80", "server address")
 var numClients = flag.Int("clients", 100, "number of clients")
 
-const pingPeriod = 5 * time.Second
+const (
+	pingPeriod = 5 * time.Second
+
+	// Shows how fast should the clients be spawned.
+	clientSpawnTime = 50 * time.Millisecond
+)
 
 func main() {
 	flag.Parse()
@@ -25,6 +30,7 @@ func main() {
 	fmt.Println("Connecting to: " + u.String())
 
 	for i := 0; i < *numClients; i++ {
+		time.Sleep(clientSpawnTime)
 		go func(j int) {
 			startClient(u.String(), j)
 		}(i)
