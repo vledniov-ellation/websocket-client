@@ -24,8 +24,10 @@ func main() {
 	u := url.URL{Scheme: "ws", Host: *addr, Path: "/ws"}
 	fmt.Println("Connecting to: " + u.String())
 
-	for j := 0; j < *numClients; j++ {
-		go startClient(u.String(), j)
+	for i := 0; i < *numClients; i++ {
+		go func(j int) {
+			startClient(u.String(), j)
+		}(i)
 	}
 
 	waitForInterrupt()
