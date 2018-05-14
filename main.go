@@ -30,7 +30,7 @@ func main() {
 	fmt.Println("Connecting to: " + u.String())
 
 	for i := 0; i < *numClients; i++ {
-		time.Sleep(clientSpawnTime)
+		//time.Sleep(clientSpawnTime)
 		go func(j int) {
 			startClient(u.String(), j)
 		}(i)
@@ -103,19 +103,13 @@ func readChannel(client *Client) {
 		var incoming Message
 		json.Unmarshal(message, &incoming)
 
-		//log.Print("MESSAGE RECEIVED: ", incoming.Body)
+		log.Print("MESSAGE RECEIVED: ", incoming.Body)
 	}
 }
 
 func waitForInterrupt() {
 	signalChan := make(chan os.Signal, 1)
-	cleanupDone := make(chan bool)
 	signal.Notify(signalChan, os.Interrupt)
-	go func() {
-		for range signalChan {
-			log.Println("\nReceived an interrupt, stopping services...\n")
-			cleanupDone <- true
-		}
-	}()
-	<-cleanupDone
+	<-signalChan
+	log.Println("Shutting down...")
 }
